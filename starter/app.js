@@ -1,15 +1,9 @@
 //Budgeting Application
 
 var budgetController = (function () {
-    var x = 23;
-    
-    var add = function(a) {
-        return x + a;
-    }
+
     return {
-        publicTest: function(b) {
-            return add(b);
-        }
+        //the object returned into the budget controller
     }
 })();
 
@@ -21,19 +15,18 @@ var budgetController = (function () {
 var UIController = (function() {
     
     //Code for the UI controller
-    
+    return{
+        //the object returned into the ui controller
+    }
     
 })();
 
 
 //Connecting controller.  Knows both the budget and UI controller so it can bridge them
 var controller = (function(bdgtCtrl, UICtrl) {
-    var z = bdgtCtrl.publicTest(20);
-    
+
     return {
-        anotherPublic: function() {
-            console.log(z);
-        }
+        //the object returned to the controller
     }
     
 })(budgetController, UIController);
