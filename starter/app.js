@@ -15,7 +15,12 @@ var budgetController = (function () {
 
 //UI Controller - controls what is disaplyed to the user
 var UIController = (function() {
-    
+    var DOMstrings = {
+        inputType: '.add__type',
+        inputDescription: '.add__description',
+        inputValue: '.add__value',
+        inputButton: '.add__btn'
+    }
     
     
     return{
@@ -25,13 +30,16 @@ var UIController = (function() {
             //all input variables:
             //add__value, add__description, add__type inc or exp
             return {
-            type :document.querySelector('.add__type').value,
-            description: document.querySelector('.add__description').value,
-            value: document.querySelector('.add__value').value
+            type :document.querySelector(DOMstrings.inputType).value,
+            description: document.querySelector(DOMstrings.inputDescription).value,
+            value: document.querySelector(DOMstrings.inputValue).value
             };
 
             
 
+        },
+        getDOMstrings: function(){
+            return DOMstrings;
         }
     }
     
@@ -40,7 +48,7 @@ var UIController = (function() {
 
 //Controller - Connecting controller.  Knows both the budget and UI controller so it can bridge them
 var controller = (function(bdgtCtrl, UICtrl) {
-
+    var DOM = UICtrl.getDOMstrings();
     var ctrlAddItem = function(){
                 //To Do
         //1. Get field input data
@@ -55,9 +63,10 @@ var controller = (function(bdgtCtrl, UICtrl) {
         //5. Display the budget
         
     }
-    document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+    document.querySelector(DOM.inputButton).addEventListener('click', ctrlAddItem);
     document.addEventListener('keypress', function(event){
-       if(event.keyCode === 13 || event.which === 13){
+       if(event.key === 'Enter' || event.which === 13){
+           event.preventDefault();
            ctrlAddItem(); 
         } 
     });
