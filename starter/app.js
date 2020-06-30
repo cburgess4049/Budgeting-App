@@ -76,7 +76,6 @@ var UIController = (function() {
         expenseContainer: '.expenses__list'
     }
     
-    
     return{
         //the object returned into the ui controller
         //public functions and variables go here
@@ -123,6 +122,7 @@ var UIController = (function() {
 var controller = (function(bdgtCtrl, UICtrl) {
     
     var setUpEvevntListeners = function() {
+        //DOM holds the object that contains all class strings for each DOM item
         var DOM = UICtrl.getDOMstrings();
         
         document.querySelector(DOM.inputButton).addEventListener('click', ctrlAddItem);
@@ -150,7 +150,6 @@ var controller = (function(bdgtCtrl, UICtrl) {
         UICtrl.addListItem(newItem, input.type);
         
         //4. Calculate the budget
-        
         //5. Display the budget
         
     }
