@@ -50,12 +50,11 @@ var budgetController = (function () {
         addItem: function(type, des, val){
             var newItem, ID;
             //Finding/Creating the new ID
-            if(data.allItems.length > 0){
-                ID = data.allItems[type][data.allItems.length - 1].id + 1;
+            if(data.allItems[type].length > 0){
+                ID = data.allItems[type][data.allItems[type].length - 1].id + 1;
             } else{
                 ID = 0;
             }
-            
             
             //create item based on inc or exp type
             if(type === 'inc'){
@@ -119,7 +118,8 @@ var UIController = (function() {
         expensesLabel: '.budget__expenses--value',
         incomeLabel: '.budget__income--value',
         budgetLabel: '.budget__value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        container: '.container'
         
     }
     
@@ -150,6 +150,8 @@ var UIController = (function() {
 
             //2. Replace the placeholder text with some real data
             newHTML = html.replace('%id%', obj.id);
+            console.log(obj.id);
+            console.log(newHTML);
             newHTML = newHTML.replace('%description%', obj.description);
             newHTML = newHTML.replace('%value%', obj.value);
             
@@ -214,6 +216,8 @@ var controller = (function(bdgtCtrl, UICtrl) {
                ctrlAddItem(); 
             } 
         });
+        
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
     };
     
     var updateBudget = function () {
@@ -240,7 +244,7 @@ var controller = (function(bdgtCtrl, UICtrl) {
         if(input.description !== '' && !isNaN(input.value) && input.value !== 0 ){
             //2. Add the item to the budget controller
             newItem = bdgtCtrl.addItem(input.type, input.description, input.value);
-
+            console.log(newItem);
             //3. Add the new item to the UI controller
             UICtrl.addListItem(newItem, input.type);
 
@@ -251,7 +255,10 @@ var controller = (function(bdgtCtrl, UICtrl) {
             //5. Calcuate and update budget
             updateBudget();
         }
-        
+    };
+    
+    var ctrlDeleteItem = function(event){
+        console.log(event.target.parentNode.parentNode.parentNode.parentNode.id);
 
         
     };
