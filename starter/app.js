@@ -9,6 +9,20 @@ var budgetController = (function () {
         this.id = id;
         this.description= description;
         this.value = value;
+        this.percentage = -1;
+    };
+    
+    Expense.prototype.calcPercentage = function(totalIncome){
+        
+        if(totalIncome > 0){
+            this.percentage = Math.round((this.value/totalIncome) * 100);
+        } else {
+            this.percentage = -1;
+        }
+    };
+    
+    Expense.prototype.getPercentage = function() {
+        return this.percentage;
     }
     
     //Income constructor function (That's why it is capitalized)
@@ -16,7 +30,7 @@ var budgetController = (function () {
         this.id = id;
         this.description= description;
         this.value = value; 
-    }
+    };
     
     //Calculates the totals for a given type.  If given 'exp' it will loop through the Expenses in the exp array found in the data object under allItems, and will total their values.
     var calculateTotal = function(type){
@@ -105,6 +119,19 @@ var budgetController = (function () {
             
         },
         
+        calculatePercentages: function() {
+            data.allItems.exp.forEach(function(curr){
+                curr.calcPercentage(data.totals.inc);  
+            });
+        },
+        
+        getPercentages: function(){
+            var allPercentages = data.allItems.exp.map(function(curr){
+                return curr.getPercentage();
+            });
+            return allPercentages;
+        },
+        
         getBudget: function(){
             return {
                 budget: data.budget,
@@ -134,9 +161,11 @@ var UIController = (function() {
         incomeLabel: '.budget__income--value',
         budgetLabel: '.budget__value',
         percentageLabel: '.budget__expenses--percentage',
-        container: '.container'
+        container: '.container',
+        expensesPercentageLabel: '.item__percentage'
         
     }
+    
     
     return{
         //the object returned into the ui controller
@@ -212,6 +241,36 @@ var UIController = (function() {
         
         },
         
+        disaplayPercentages: function(percentages) {
+            
+            //returns Node List rather than an array
+            //Nodes do not have the forEach method
+            var fields = document.querySelectorAll(DOMstrings.expensesPercentageLabel);
+            
+            //ForEach function that works for node lists
+            var nodeListForEach = function(list, callbackFunc){
+                for(var i =0; i < list.length; i++){
+                    callbackFunc(list[i], i);
+                }
+            };
+            
+            nodeListForEach(fields, function(current, index) {
+                //Do stuff with the Node list
+                
+                if(percentages[index] > 0){
+                   current.textContent = percentages[index] + '%';
+                } else{
+                   current.textContent = '---';
+                }
+                
+            });
+                
+        },
+        
+        formatNumber: function(num, type){
+            
+        },
+        
         getDOMstrings: function(){
             return DOMstrings;
         }
@@ -252,6 +311,19 @@ var controller = (function(bdgtCtrl, UICtrl) {
         
     };
     
+    var updatePercentages = function (){
+        
+        //1. Calculate percentages
+        bdgtCtrl.calculatePercentages();
+        
+        //2. Read percentages from the budget controller
+        var percentages = bdgtCtrl.getPercentages();
+        
+        //3. Update the User interface with new percentages
+        UICtrl.disaplayPercentages(percentages);
+        
+    }
+    
     
     var ctrlAddItem = function(){
         var input, newItem;
@@ -272,6 +344,9 @@ var controller = (function(bdgtCtrl, UICtrl) {
 
             //5. Calcuate and update budget
             updateBudget();
+            
+            //6. Update percentages on exp/inc item
+            updatePercentages();
         }
     };
     
@@ -293,6 +368,9 @@ var controller = (function(bdgtCtrl, UICtrl) {
             
             //3.  Update and show new totals/budget
             updateBudget();
+            
+            //4. Update percentages on exp/inc item
+            updatePercentages();
         }
 
         
